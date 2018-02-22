@@ -1,0 +1,15 @@
+[package]
+name = "roman_numerals"
+version = "1.0.0"
+authors = ["delimitry"]
+license = "MIT"
+repository = "https://github.com/delimitry/roman_numerals"
+description = """
+Tool in Rust to convert positive integers to Roman Numerals.
+"""
+
+[[bin]]
+name = "roman_numerals"
+test = true
+doc = false
+path = "src/main.rs"
