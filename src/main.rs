@@ -4,49 +4,35 @@ use std::string::String;
 
 
 static ROMAN_NUMERALS: &'static [&'static str] = &[
-    "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", // 1..10
+    "I", "IV", "V", "IX", "X", // 1, 4, 5, 9, 10
     "XL", "L", "XC", "C", "CD", "D", "CM", "M", // 40, 50, 90, 100, 400, 500, 900, 1000
 ];
 
 
-static NUMBERS: &[u16] = &[
-    1,
-    2,
-    3,
-    4,
-    5,
-    6,
-    7,
-    8,
-    9,
-    10,
-    40,
-    50,
-    90,
-    100,
-    400,
-    500,
-    900,
-    1000,
-];
+static NUMBERS: &[u16] = &[1, 4, 5, 9, 10, 40, 50, 90, 100, 400, 500, 900, 1000];
 
 
 // Convert integer to Roman numerals
-fn int_to_roman(number: u16) -> String {
+fn int_to_roman(number: u16) -> Result<String, String> {
     // largest number that can be represented is 4999
-    let mut out = String::with_capacity(4);
-    let mut val = number;
-    for (i, &n) in NUMBERS.iter().rev().enumerate() {
-        if val >= n {
-            let q = val / n;
-            val = val % n;
-            if q > 0 {
-                let v = ROMAN_NUMERALS[NUMBERS.len() - 1 - i];
-                out.push_str(&v.repeat(q as usize));
+    if !(0 < number && number <= 4999) {
+        Err("Please enter positive number from 1 to 4999".to_owned())
+    } else {
+        let mut out = String::with_capacity(4);
+        let mut val = number;
+        for (i, &num) in NUMBERS.iter().rev().enumerate() {
+            if val >= num {
+                let quotient = val / num;
+                val %= num; // set to remainder
+                if quotient > 0 {
+                    let v = ROMAN_NUMERALS[NUMBERS.len() - 1 - i];
+                    // repeat numeral `quotient` times (e.g. 2 = 2 * I = II, 30 = 3 * X = XXX)
+                    out.push_str(&v.repeat(quotient as usize));
+                }
             }
         }
+        Ok(out)
     }
-    out
 }
 
 
@@ -57,6 +43,8 @@ mod tests {
     #[test]
     fn int_to_roman_test() {
         assert_eq!(int_to_roman(1), "I");
+        assert_eq!(int_to_roman(3), "III");
+        assert_eq!(int_to_roman(7), "VII");
         assert_eq!(int_to_roman(26), "XXVI");
         assert_eq!(int_to_roman(344), "CCCXLIV");
         assert_eq!(int_to_roman(4999), "MMMMCMXCIX");
@@ -79,12 +67,11 @@ fn main() {
     let number = args[1].parse::<u16>();
     match number {
         Ok(i) => {
-            if !(0 < i && i <= 4999) {
-                println!("Please enter positive number from 1 to 4999");
-                return;
+            match int_to_roman(i) {
+                Ok(res) => println!("{}", res),
+                Err(err) => println!("Error: {}", err),
             }
-            println!("{}", int_to_roman(i))
         }
-        Err(..) => println!("Please enter positive number from 1 to 4999"),
+        Err(_) => println!("Error: Please enter positive number from 1 to 4999"),
     };
 }
