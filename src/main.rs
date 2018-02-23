@@ -42,13 +42,15 @@ mod tests {
 
     #[test]
     fn int_to_roman_test() {
-        assert_eq!(int_to_roman(1), "I");
-        assert_eq!(int_to_roman(3), "III");
-        assert_eq!(int_to_roman(7), "VII");
-        assert_eq!(int_to_roman(26), "XXVI");
-        assert_eq!(int_to_roman(344), "CCCXLIV");
-        assert_eq!(int_to_roman(4999), "MMMMCMXCIX");
-        assert_ne!(int_to_roman(123), "IVX"); // negative
+        assert_eq!(int_to_roman(1).unwrap(), "I");
+        assert_eq!(int_to_roman(3).unwrap(), "III");
+        assert_eq!(int_to_roman(7).unwrap(), "VII");
+        assert_eq!(int_to_roman(26).unwrap(), "XXVI");
+        assert_eq!(int_to_roman(344).unwrap(), "CCCXLIV");
+        assert_eq!(int_to_roman(4999).unwrap(), "MMMMCMXCIX");
+        assert_ne!(int_to_roman(123).unwrap(), "IVX"); // negative
+        assert!(int_to_roman(0).is_err(), "Error must be returned"); // err
+        assert!(int_to_roman(5555).is_err(), "Error must be returned"); // err
     }
 }
 
